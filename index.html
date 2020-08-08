@@ -424,6 +424,43 @@ Page({
 
   </section>
 
+  <section id="security-and-privacy">
+    <h2>
+      Security and privacy
+    </h2>
+
+    <p>
+      Since MiniApps run in the hosting platform (aka user agent), in a native app people only care about whether there are vulnerabilities in the app itself, in a MiniApp people also need to know whether the hosting platform is secure.
+    </p>
+
+    <figure id="fig-miniapp-user-agent">
+      <span style="text-align:center;"><img src="images/miniapp-user-agent.svg" alt="The relationship between MiniApps and the user agent." width="600"></span>
+      <figcaption>
+        The relationship between MiniApps and the user agent is similar to the relationship between a native app and the operating system, or the relationship between a web app and the brwoser.
+      </figcaption>
+    </figure>
+
+    <p>
+      Native apps will directly invoke system APIs, so many vulnerabilities are related to the operating system version, such as the WebView version in the user's operating system. However, beacuse some MiniApp implementations use their own browser engines (see [[[#runtime]]]), if the engine mitigates the vulnerability, there is no need to consider the impact of this vulnerability even on low-version Android systems. On the other hand, if there is a vulnerability specific to the browser engine in the MiniApp hosting platform, it will affect the MiniApps but not other parts of the system.
+    </p>
+
+    <p>
+      Since MiniApps can not access DOM and the global object <code>window</code> (by seperating the view layer and the logical layer execution environment), and can only use the APIs and components the user agents provide, so it is not possible (or very difficult) for malicious code to jump to a random web page or MiniApp, or change the content on the UI. Since there are MiniApps components that can display sensitive data like username, avatar, gender, and geolocation etc., if developers can manipulate the DOM, it means that they can get user's sensitive information at will.
+    </p>
+
+    <p>
+      Since most MiniApp implementations disallow dynamic code loading like <code>eval</code>, XSS is very difficult (or impossible).
+    </p>
+
+    <p>
+      MiniApps usually have a domain name safelist, to permit scripts contained in a MiniApp to access data from a URL only when the domain name is in the safelist.
+    </p>
+
+    <p>
+      Since MiniApps restrict the use of cookies, CSRF attacks is harder in MiniApps than normal web apps.
+    </p>
+  </section>
+
 
 </body>
 </html>

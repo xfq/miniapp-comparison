@@ -61,6 +61,17 @@ var respecConfig = {
     </p>
 
     <p>
+      The running environment of MiniApps is divided into a view layer and a logic layer. The view layer only deals with rendering and listens out for the events happening. The logic layer only deals with data and logic.
+    </p>
+
+    <figure id="fig-view-logic">
+      <span style="text-align:center;"><img src="images/view-logic.svg" alt="The view layer and the logic layer." width="600"></span>
+      <figcaption>
+        The commnication between the view layer and the logic layer.
+      </figcaption>
+    </figure>
+
+    <p>
       The logic layer is usually written in JavaScript. It processes the data and sends it to the view layer, and receives feedback from the view layer.
     </p>
 
@@ -84,7 +95,7 @@ var respecConfig = {
     </h2>
   
     <p>
-      There is usually a template language/mechinism (such as <a href="https://developers.weixin.qq.com/miniprogram/en/dev/framework/view/wxml/">WXML</a>, <a href="https://smartprogram.baidu.com/docs/develop/framework/dev/">swan</a>, <a href="https://opendocs.alipay.com/mini/framework/axml">AXML</a>, <a href="https://microapp.bytedance.com/docs/zh-CN/mini-app/develop/framework/view/ttml">TTML</a> etc.) for the view layer of the MiniApp pages, which is similar to HTML in Web development.
+      There is usually a template language/mechinism (such as <a href="https://developers.weixin.qq.com/miniprogram/en/dev/framework/view/wxml/">WXML</a>, <a href="https://smartprogram.baidu.com/docs/develop/framework/dev/">swan</a>, <a href="https://opendocs.alipay.com/mini/framework/axml">AXML</a>, <a href="https://microapp.bytedance.com/docs/zh-CN/mini-app/develop/framework/view/ttml">TTML</a> etc.) for the view layer of the MiniApp pages, which is similar to HTML in Web development. The MiniApp runtime translates the template language into HTML (each page is rendered in a different WebView, but all WebViews shares the image cache) or native code.
     </p>
 
     <p>
@@ -167,6 +178,48 @@ Page({
     }
 });
 </pre>
+
+</section>
+
+<section>
+  <h2>
+    Example 4
+  </h2>
+
+<pre class="example html" title="Example reactive data-binding in WeChat Mini Programs, view layer">
+&lt;view> Hello {{name}}! &lt;/view>
+&lt;button bindtap="changeName"> Click me! &lt;/button>
+</pre>
+    
+<pre class="example js" title="Example reactive data-binding in WeChat Mini Programs, logic layer">
+// This is our data.
+var helloData = {
+  name: 'WeChat'
+}
+
+// Register a MiniApp page.
+Page({
+  data: helloData,
+  changeName: function(e) {
+    // sent data change to view
+    this.setData({
+      name: 'MiniApp'
+    })
+  }
+})
+</pre>
+
+<p>
+  The user agent binds the <code>name</code> in the data in with the <code>name</code> in the view layer, so when the page is loaded, it will display "Hello WeChat!".
+</p>
+
+<p>
+  When the button is clicked, the view layer will fire an event for <code>changeName</code> to the logic layer, and the logic layer will find and execute the corresponding event handler.
+</p>
+
+<p>
+  After the callback function is triggered, the logic layer changes the name in the data from WeChat to MiniApp. Because the data and the view layer have been bound, the view layer will automatically change to "Hello MiniApp!".
+</p>
 
 </section>
   
@@ -404,23 +457,34 @@ Page({
     </h2>
 
     <section>
-      <h2>
-        Quick Apps
-      </h2>
+      <h2>Snapshot</h2>
 
     <p>
-      <a href="https://www.quickapp.cn/">Quick Apps</a> can perform a pre-rendering process on some pages in the cloud to generate a rendering intermediate format called snapshot. The snapshot format is very small after compression. A 50K JavaScript file generates a ~3K snapshot.
+      Some MiniApp implementations like <a href="https://www.quickapp.cn/">Quick Apps</a> can perform a pre-rendering process on some pages in the cloud to generate a rendering intermediate format called snapshot. The snapshot format is very small after compression. For example, a 50K JavaScript file generates a ~3K snapshot.
     </p>
 
     <p>
-      Since the snapshot file is very small, it can be distributed as part of the Quick App metadata. For example, when a user searches for a Quick App in the app store, the snapshot has been loaded along with the name of the Quick App, package download link and other information.
+      Since the snapshot file is very small, it can be distributed as part of the MiniApp metadata. For example, when a user searches for a MiniApp in the app store, the snapshot has been loaded along with the name of the MiniApp, package download link and other information.
     </p>
 
     <p>
-      When the Quick App is loaded and started for the first time, the download URL of the package and the snapshot file are passed to the Quick App engine. When the engine requests to download the Quick App package, it loads and parses the snapshot and renders it. When the package download is complete, the standard rendering process continues on the basis of the snapshot.
+      When the MiniApp is loaded and started for the first time, the download URL of the package and the snapshot file are passed to the MiniApp engine. When the engine requests to download the MiniApp package, it loads and parses the snapshot and renders it. When the package download is complete, the standard rendering process continues on the basis of the snapshot.
     </p>
 
-    </section>
+  </section>
+
+  <section>
+    <h2>Virtual DOM</h2>
+
+    <p>
+      The page rendering of MiniApps often uses virtual DOM to ensure that only the changed data are updated when the page is updated. In web apps, virtual DOM is usually implemented with JavaScript, which consumes a lot of CPU and is not very efficient.
+    </p>
+
+    <p>
+      Some MiniApp engines use WebAssembly to implement the core logic of virtual DOM, and modifies the JavaScript engine to improve the performance of calls between JavaScript and WebAssembly.
+    </p>
+
+  </section>
 
   </section>
 

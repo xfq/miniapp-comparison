@@ -49,6 +49,10 @@ var respecConfig = {
     </p>
 
     <p>
+      A MiniApp runs in a <dfn>hosting platform</dfn> (aka hosting environment or user agent). A <a>hosting platform</a> can be a native app (similar to a web browser), or (an engine embedded in) the operating system.
+    </p>
+
+    <p>
       MiniApps usually need to be reviewed by the hosting platform to go online, and web apps just need to have a web server (and optionally a domain name) to go online.
     </p>
   
@@ -84,7 +88,7 @@ var respecConfig = {
     </p>
 
     <p>
-      In the [[[#view]]], the host environment will convert the layout language (WXML, for example) into a JavaScript object. When data changes in the logic layer, the data is passed from the logic layer to the view layer through a method provided by the host environment, and then the diff of the DOM before and after is generated. After that, the differences will be applied to the original DOM tree and render the changed UI.
+      In the [[[#view]]], the <a>hosting platform</a> will convert the layout language (WXML, for example) into a JavaScript object. When data changes in the logic layer, the data is passed from the logic layer to the view layer through a method provided by the <a>hosting platform</a>, and then the diff of the DOM before and after is generated. After that, the differences will be applied to the original DOM tree and render the changed UI.
     </p>
 
   </section>
@@ -436,7 +440,7 @@ Page({
     </ul>
 
     <p>
-      When the MiniApp is cold-launched, the hosting platform will use the local package to load the MiniApp, and at the same time, it will automatically detect whether there is a new package version in the cloud and download it asynchronously. After the download is complete, the new version of the package will be used when the user triggers a cold launch next time.
+      When the MiniApp is cold-launched, the <a>hosting platform</a> will use the local package to load the MiniApp, and at the same time, it will automatically detect whether there is a new package version in the cloud and download it asynchronously. After the download is complete, the new version of the package will be used when the user triggers a cold launch next time.
     </p>
   </section>
 
@@ -494,7 +498,7 @@ Page({
     </h2>
 
     <p>
-      Since MiniApps run in the hosting platform (aka user agent), in a native app people only care about whether there are vulnerabilities in the app itself, in a MiniApp people also need to know whether the hosting platform is secure.
+      Since MiniApps run in the <a>hosting platform</a>, in a native app people only care about whether there are vulnerabilities in the app itself, in a MiniApp people also need to know whether the hosting platform is secure.
     </p>
 
     <figure id="fig-miniapp-user-agent">

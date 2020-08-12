@@ -57,7 +57,7 @@ var respecConfig = {
     </p>
   
     <p>
-      MiniApp development includes global configuration files and page configuration files. The configuration files are usually in JSON.
+      A MiniApp includes a global manifest file and zero or more <a>page</a> manifest files. The manifest files are usually in JSON.
     </p>
 
     <p>
@@ -229,6 +229,112 @@ Page({
   
   </section>
 
+  <section id="pages">
+    <h2>
+      Pages
+    </h2>
+    <p>
+      A MiniApp <dfn>page</dfn> represents a page of the MiniApp and is responsible for page display and interaction. Each page usually corresponds to a directory in the MiniApp package.
+    </p>
+    <p>
+      Each MiniApp page generally contains a JavaScript file for the logic layer, a template file for the [[[#view]]], and optional CSS and JSON files for page styling and metadata.
+    </p>
+    <p>
+      For each page in a MiniApp, the developer need to register in the JavaScript file corresponding to the page, and specify the initial data, lifecycle callback, event handlers, etc. of the page in the <code>Page</code> constructor.
+    </p>
+<pre class="example js" title="Register a simple page using the Page constructor in WeChat Mini Programs">
+  // index.js
+  Page({
+    data: {
+      text: "This is page data."
+    },
+    onLoad: function(options) {
+      // Execute when the page is created
+    },
+    onShow: function() {
+      // Execute when the page appears in the foreground
+    },
+    onReady: function() {
+      // Execute when the page is rendered for the first time
+    },
+    onHide: function() {
+      // Execute when the page changes from the foreground to the background
+    },
+    onUnload: function() {
+      // Execute when the page is destroyed
+    },
+    onPullDownRefresh: function() {
+      // Execute when a pull-down refresh is triggered
+    },
+    onReachBottom: function() {
+      // Execute when the page is scrolled to the bottom
+    },
+    onShareAppMessage: function () {
+      // Execute when the page is shared by the user
+    },
+    onPageScroll: function() {
+      // Execute when the page is being scrolled
+    },
+    onResize: function() {
+      // Execute when the page size changes
+    },
+    // Event handler
+    viewTap: function() {
+      this.setData({
+        text: 'Set some data for updating view.'
+      }, function() {
+        // this is setData callback
+      })
+    },
+    // Custom data
+    customData: {
+      hi: 'MiniApps'
+    }
+  })
+</pre>
+
+<p><dfn>Behaviors</dfn> (similar to mixins or traits in some programming languages) can be used to make multiple pages have the same data fields and methods.</p>
+
+<pre class="example js" title="Example behavior in WeChat Mini Programs">
+  // my-behavior.js
+  module.exports = Behavior({
+    data: {
+      sharedText: 'This is a piece of data shared between pages.'
+    },
+    methods: {
+      sharedMethod: function() {
+        this.data.sharedText === 'This is a piece of data shared between pages.'
+      }
+    }
+  })
+
+
+  // page-a.js
+  var myBehavior = require('./my-behavior.js')
+  Page({
+    behaviors: [myBehavior],
+    onLoad: function() {
+      this.data.sharedText === 'This is a piece of data shared between pages.'
+    }
+  })
+</pre>
+
+<section>
+  <h2>Page router</h2>
+  <p>
+    The routing of all pages in a MiniApp is managed by the <a>hosting platform</a>.
+  </p>
+
+  <p>
+    The hosting platform maintains all current pages in the form of a <a href="https://developers.weixin.qq.com/miniprogram/en/dev/framework/app-service/route.html">stack</a>.
+  </p>
+
+  <p>
+    MiniApp hosting platforms usually provide a function to get the current page stack. For example, the <code>getCurrentPages()</code> function in WeChat Mini Programs (and some other implementations) returns an array, and each element of the array is an object representing a page.
+  </p>
+</section>
+</section>
+
 
 <section id="components">
     <h2>
@@ -307,6 +413,21 @@ Page({
       Runtime
     </h2>
 
+    <section>
+      <h2>Multi-process/thread architecture</h2>
+      <p>
+        The exact process model of a MiniApp is related to the operating system. The MiniApps <a>hosting platform</a> tries to ensure that a MiniApp is run in a separate process when possible. The advantage of this is higher performance and better security. Under iOS, a thread-level runtime model is used, and each MiniApp runs in its own thread(s).
+      </p>
+      <p>
+        Under iOS, a thread-level runtime model is used, and each MiniApp runs in its own thread(s).
+      </p>
+      <p>
+        Each MiniApp page can have multiple independent threads in the logic layer. In the view layer, there is usually one thread, but some MiniApp implementations uses multiple threads to preload WebViews to improve the performance of page navigation.
+      </p>
+    </section>
+
+    <section>
+      <h2>Examples</h2>
     <p>
       Different MiniApp implementations have different runtime environments. Here are a few examples:
     </p>
@@ -420,6 +541,7 @@ Page({
       </p>
   </section>
   </section>
+  </section>
 
   <section id="lifecycle">
     <h2>
@@ -442,6 +564,45 @@ Page({
     <p>
       When the MiniApp is cold-launched, the <a>hosting platform</a> will use the local package to load the MiniApp, and at the same time, it will automatically detect whether there is a new package version in the cloud and download it asynchronously. After the download is complete, the new version of the package will be used when the user triggers a cold launch next time.
     </p>
+  </section>
+
+  <section id="navigation">
+    <h2>
+      Navigation
+    </h2>
+
+    <p>
+      To jump from one MiniApp to another in the same hosting platform, platform-specific API or component is usually used. For example, WeChat Mini Programs has a <a href="https://developers.weixin.qq.com/miniprogram/en/dev/api/open-api/miniprogram-navigate/wx.navigateToMiniProgram.html">wx.navigateToMiniProgram(Object object)</a> method and a <a href="https://developers.weixin.qq.com/miniprogram/en/dev/component/navigator.html">navigator</a> component:
+    </p>
+
+<pre class="example js" title="Navigation API in WeChat Mini Programs">
+  wx.navigateToMiniProgram({
+    appId: 'com.company.miniapp', // See https://w3c.github.io/miniapp/specs/manifest/#appid
+    path: 'page/index/index?id=123', // If it is empty, open the homepage of the MiniApp
+    extraData: {
+      foo: 'bar'
+    },
+    envVersion: 'develop', // The version of the MiniApp to open. Valid values: `develop`, `trial`, and `release`.
+    success(res) {
+      // Success
+    }
+  })
+</pre>
+
+<pre class="example html" title="Navigator component in WeChat Mini Programs">
+&lt;!-- `target` can be `self`, which means the current Mini Program,
+or `miniProgram`, which means another Mini Program. -->
+&lt;navigator target="miniProgram" open-type="navigate" app-id="com.company.miniapp" path="" extra-data="" version="release">Open a MiniApp&lt;/navigator>
+</pre>
+
+<p>
+  Some MiniApp implementations also support the <code>a</code> element in HTML.
+</p>
+
+<p>
+  Jumping from one MiniApp to another MiniApp in a <em>different</em> <a>hosting platform</a> is currently not supported. <a href="https://github.com/w3c/miniapp/blob/gh-pages/specs/uri/docs/explainer.md">MiniApp URI Scheme</a> is a proposal to fix this issue.
+</p>
+
   </section>
 
   <section id="api">

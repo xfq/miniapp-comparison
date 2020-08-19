@@ -49,6 +49,10 @@ var respecConfig = {
     </p>
 
     <p>
+      The <a href="https://w3c.github.io/miniapp/white-paper/#introduction">first chapter</a> of the <a href="https://w3c.github.io/miniapp/white-paper/">MiniApp Standardization White Paper</a> contains some comparison from the user's point of view. The following text mainly documents the differences from the implementer's and developer's point of view.
+    </p>
+
+    <p>
       A MiniApp runs in a <dfn>hosting platform</dfn> (aka hosting environment or user agent). A <a>hosting platform</a> can be a native app (similar to a web browser), or (an engine embedded in) the operating system.
     </p>
 
@@ -99,7 +103,7 @@ var respecConfig = {
     </h2>
   
     <p>
-      There is usually a template language/mechinism (such as <a href="https://developers.weixin.qq.com/miniprogram/en/dev/framework/view/wxml/">WXML</a>, <a href="https://smartprogram.baidu.com/docs/develop/framework/dev/">swan</a>, <a href="https://opendocs.alipay.com/mini/framework/axml">AXML</a>, <a href="https://microapp.bytedance.com/docs/zh-CN/mini-app/develop/framework/view/ttml">TTML</a> etc.) for the view layer of the MiniApp pages, which is similar to HTML in Web development. The MiniApp runtime translates the template language into HTML (each page is rendered in a different WebView, but all WebViews shares the image cache) or native code.
+      There is usually a markup language with a template mechanism (such as <a href="https://developers.weixin.qq.com/miniprogram/en/dev/framework/view/wxml/">WXML</a>, <a href="https://smartprogram.baidu.com/docs/develop/framework/dev/">swan</a>, <a href="https://opendocs.alipay.com/mini/framework/axml">AXML</a>, <a href="https://microapp.bytedance.com/docs/zh-CN/mini-app/develop/framework/view/ttml">TTML</a> etc.) for the view layer of the MiniApp pages, which is similar to HTML in Web development. The MiniApp runtime translates the markup language into HTML (each page is rendered in a different WebView, but all WebViews shares the image cache) or native code.
     </p>
 
     <p>
@@ -224,6 +228,46 @@ Page({
 <p>
   After the callback function is triggered, the logic layer changes the name in the data from WeChat to MiniApp. Because the data and the view layer have been bound, the view layer will automatically change to "Hello MiniApp!".
 </p>
+
+</section>
+
+<section>
+  <h2>
+    Example 5
+  </h2>
+
+<pre class="example html" title="Change style dynamically in WeChat Mini Programs, markup">
+&lt;view>
+  &lt;view class="test" style="background:{{background}};color:{{color}};height:{{height}}">This can be changed.&lt;/view>
+  &lt;button bindtap="changeStyle">Change the style&lt;/button>
+&lt;/view>
+</pre>
+
+<pre class="example css" title="Change style dynamically in WeChat Mini Programs, styling">
+/* The rpx unit does not exist in standard CSS, but since this is not the point of the
+   example, it will not be explained in this section. */
+.test {
+  height: 150rpx;
+  line-height: 150rpx;
+  text-align: center;
+  border: 1px solid #89dcf8;
+  margin-bottom: 112rpx;
+  margin: 13rpx;
+}
+</pre>
+    
+<pre class="example js" title="Change style dynamically in WeChat Mini Programs, logic layer">
+Page({
+  data: {},
+  changeStyle: function() {
+    this.setData({
+      background: "#89dcf8",
+      color:'#ffffff',
+      height:"322rpx"
+    })
+  }
+})
+</pre>
 
 </section>
   
@@ -561,7 +605,7 @@ Page({
       <li>Hot launch: when the user reopens a MiniApp within a certain period of time;</li>
     </ul>
 
-    <p>
+    <p id="update-miniapp">
       When the MiniApp is cold-launched, the <a>hosting platform</a> will use the local package to load the MiniApp, and at the same time, it will automatically detect whether there is a new package version in the cloud and download it asynchronously. After the download is complete, the new version of the package will be used when the user triggers a cold launch next time.
     </p>
   </section>
@@ -603,6 +647,24 @@ or `miniProgram`, which means another Mini Program. -->
   Jumping from one MiniApp to another MiniApp in a <em>different</em> <a>hosting platform</a> is currently not supported. <a href="https://github.com/w3c/miniapp/blob/gh-pages/specs/uri/docs/explainer.md">MiniApp URI Scheme</a> is a proposal to fix this issue.
 </p>
 
+  </section>
+
+  <section id="offline">
+    <h2>
+      Offline
+    </h2>
+
+    <p>
+      In web apps, service workers provide the technical foundation for offline experiences. It is a script that the browser runs in the background and can intercept and handle network requests, including programmatically managing a cache of responses.
+    </p>
+
+    <p>
+      While in MiniApps, offline experience is achieved by downloading the MiniApp <a href="https://w3c.github.io/miniapp/specs/packaging/">package</a> to the user's device and <a href="#update-miniapp">updating</a> it when needed.
+    </p>
+
+    <p>
+      Compared with web apps, MiniApp developers can focus more on business logic instead of caching static resources. The caching and update mechanism of the MiniApp package is automatically managed by the MiniApp <a>hosting platform</a>, and if needed, developers can influence this process through APIs provided by the <a>hosting platform</a>.
+    </p>
   </section>
 
   <section id="api">

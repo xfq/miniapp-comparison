@@ -61,7 +61,7 @@ var respecConfig = {
     </p>
   
     <p>
-      A MiniApp includes a global manifest file and zero or more <a>page</a> manifest files. The manifest files are usually in JSON.
+      A MiniApp includes a global [[[#manifest]]] file and zero or more <a>page</a> manifest files. The manifest files are usually in JSON.
     </p>
 
     <p>
@@ -440,7 +440,7 @@ Page({
 
 
     <p>
-      A MiniApp is using JSON-based manifest file to enable the
+      MiniApp uses JSON-based manifest file to enable the
       developer to set up basic information, window style, page route and other information of a MiniApp.
     </p>
     <pre class="example json">
@@ -492,17 +492,15 @@ Page({
     </pre>
     <p>
       The <a href='https://github.com/w3c/miniapp/blob/gh-pages/specs/manifest/docs/explainer.md#a-miniapp-manifest-comparison-with-web-app-manifest'>MiniApp
-        Manifest comparison with Web App Manifest</a> shows similaritudes between the 2 formats.
+        Manifest comparison with Web App Manifest</a> shows similarities between the 2 formats.
     </p>
     <p>
-      To facilitate the life of developers wanting to deploy a WebApp and a MiniApp of the same application, it
+      To facilitate the life of developers wanting to deploy a web app and a MiniApp of the same application, it
       would be beneficial to:
     </p>
     <ol>
       <li>Use the <a href='https://www.w3.org/TR/appmanifest/'>Web App Manifest</a> as the base format, since all
-        properties in Web App Manifest are optional. Indicate which Web App Manifest properties are relevant, the set of restrictions
-        applied to the values (such as only using local URLs for the pages). When backward compatibilities is needed,
-        indicate so and recommend using duplicate values (the frameworks can make that transparent).
+        properties in Web App Manifest are optional. Indicate which Web App Manifest properties are relevant, the set of restrictions applied to the values (such as only using local URLs for the pages). When backward compatibilities is needed, indicate so and recommend using duplicate values (the frameworks can make that transparent).
       </li>
       <li>
         For properties that are specific to MiniApp, consider using a prefix or add them to a <code>miniapp</code> property to
@@ -511,7 +509,7 @@ Page({
         under <code>window</code>).
       </li>
       <li>
-        For permissions, consider re-using the same features used by <code>document.featurePolicy.features()</code>, eg
+        For permissions, consider re-using the same features used by <code>document.featurePolicy.features()</code>, e.g.,
         "geolocation", "gamepad", "magnetometer", "accelerometer", "xr-spatial-tracking", "picture-in-picture", "camera", "payment", "pointer-lock", etc.
         Again, a prefix may be used for MiniApp specific features.
       </li>

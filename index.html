@@ -549,7 +549,7 @@ Page({
         Under iOS, a thread-level runtime model is used, and each MiniApp runs in its own thread(s).
       </p>
       <p>
-        Each MiniApp page can have multiple independent threads in the logic layer. In the view layer, there is usually one thread, but some MiniApp implementations uses multiple threads to preload WebViews to improve the performance of page navigation.
+        Each MiniApp page can have one or multiple independent threads (also known as workers) in the logic layer. In the view layer, there is usually one thread, but some MiniApp implementations uses multiple threads to preload WebViews to improve the performance of page navigation.
       </p>
     </section>
 
@@ -691,6 +691,104 @@ Page({
     <p id="update-miniapp">
       When the MiniApp is cold-launched, the <a>hosting platform</a> will use the local package to load the MiniApp, and at the same time, it will automatically detect whether there is a new package version in the cloud and download it asynchronously. After the download is complete, the new version of the package will be used when the user triggers a cold launch next time.
     </p>
+
+    <section id="lifecycle-details">
+      <h2>
+        Detailed comparison
+      </h2>
+
+      <p>
+        In MiniApps, applications, pages, and components all have their own lifecycles. This section mainly compares the lifecycle states of MiniApp applications/pages with related Web technologies.
+      </p>
+
+      <p>
+        A MiniApp page is usually registered in a JavaScript file using a <code>Page</code> constructor and accept an object to specify the initial data, lifecycle callback, event handlers, etc.
+      </p>
+
+      <p>
+        The following example is a basic <code>Page</code> constructor:
+      </p>
+
+<pre class="example js" title="Register a simple page using the Page constructor in Alipay Mini Apps">
+  // pages/index/index.js
+  Page({
+    data: {
+      title: "Alipay",
+    },
+    onLoad(query) {
+      // Execute when the page is created
+    },
+    onShow() {
+      // Execute when the page appears in the foreground
+    },
+    onReady() {
+      // Execute when the page is rendered for the first time
+    },
+    onHide() {
+      // Execute when the page changes from the foreground to the background
+    },
+    onUnload() {
+      // Execute when the page is destroyed
+    },
+    onTitleClick() {
+      // Execute when the title is clicked
+    },
+    onPullDownRefresh() {
+      // Execute when a pull-down refresh is triggered
+    },
+    onReachBottom() {
+      // Execute when the page is scrolled to the bottom
+    },
+    onShareAppMessage() {
+     // Return to custom sharing information
+    },
+    // Event handler
+    viewTap() {
+      this.setData({
+        text: 'Set data for update.',
+      });
+    },
+    // Event handler
+    go() {
+      my.navigateTo({url:'/page/ui/index?type=mini'});
+    },
+    // Custom data
+    customData: {
+      name: 'alipay',
+    },
+  });
+</pre>
+
+   <p>
+    MiniApps are managed by a view thread and one or more logic thread(s) (also known as workers). When user opens a MiniApp for the first time, the view and logic threads will simultaneously start the initialization.
+   </p>
+
+   <p>
+    After the logic thread is initialized, it runs the MiniApp global lifecycle callback functions <code>app.onLaunch</code> and <code>app.onShow</code> to create the MiniApp instance. The "launched" state means that the MiniApp initialization is completed, and it is fired only once. After this event is fird, developers can obtain the basic information of the MiniApp, such as the URI. "Shown" is a lifecycle state for MiniApp running in foreground. It is triggered once the MiniApp launch is completed, or once the MiniApp switches from background to foreground.
+   </p>
+
+   <p>
+    After the global application is initialized, the logic thread runs the MiniApp page lifecycle callback function <code>page.onLoad</code> to create the MiniApp page instance. "Loaded" means that the MiniApp page initialization is completed. Through this event, developers can obtain the basic information of the page, such as path and query of the page.
+   </p>
+
+   <p>
+    After the pages are initialized, the logic thread wait for notification of completion of view thread initialization. When the view thread initialization is completed and the logic thread is notified, the logic thread sends the initialization data to the view thread for rendering. At this time, the view thread starts the first data rendering.
+   </p>
+
+   <p>
+    After the first rendering is completed, the view thread enters the "ready" state and notifies the logic thread. The logic thread calls the <code>page.onReady</code> function and the page is usable now.
+   </p>
+
+   <p>
+    After the page is ready, the logic thread will notify the view thread each time the data is modified, and the view thread will render it. When the page is switched into the background, the logic thread calls the <code>page.onHide</code> function. When the page returns to the foreground, the <code>page.onShow</code> function will be called. When the MiniApp is confronted with a script error, the <code>app.onError</code> function will be called. When the page is destroyed, the <code>page.onUnload</code> function is called before the page is destroyed.
+   </p>
+
+   <p>
+    In web apps, a "page" usually means the document of the <a href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context">top-level browsing context</a>, and there is no (strict) concept of "applications", so some lifecycle states in MiniApps may not have a correspondence state in web applications.
+   </p>
+  
+    </section>
+
   </section>
 
   <section id="navigation">

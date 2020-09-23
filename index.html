@@ -764,7 +764,7 @@ Page({
    </p>
 
    <p>
-    After the logic thread is initialized, it runs the MiniApp global lifecycle callback functions <code>app.onLaunch</code> and <code>app.onShow</code> to create the MiniApp instance. The "launched" state means that the MiniApp initialization is completed, and it is fired only once. After this event is fird, developers can obtain the basic information of the MiniApp, such as the URI. "Shown" is a lifecycle state for MiniApp running in foreground. It is triggered once the MiniApp launch is completed, or once the MiniApp switches from background to foreground.
+    After the logic thread is initialized, it runs the MiniApp global lifecycle callback functions <code>app.onLaunch</code> and <code>app.onShow</code> to create the MiniApp instance. The "launched" state means that the MiniApp initialization is completed, and it is fired only once. After this event is fired, developers can obtain the basic information of the MiniApp, such as the URI. "Shown" is a lifecycle state for MiniApp running in foreground. It is triggered once the MiniApp launch is completed, or once the MiniApp switches from background to foreground.
    </p>
 
    <p>
@@ -784,7 +784,11 @@ Page({
    </p>
 
    <p>
-    In web apps, a "page" usually means the document of the <a href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context">top-level browsing context</a>, and there is no (strict) concept of "applications", so some lifecycle states in MiniApps may not have a correspondence state in web applications.
+    In web apps, a "page" usually means the document of the <a href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context">top-level browsing context</a>, and there is no (strict) concept of "applications", so some lifecycle states in MiniApps do not have a correspondence state in web applications.
+   </p>
+
+   <p>
+     For example, when the MiniApp is switched into the background, the logic thread calls the <code>app.onHide</code> function, while in web apps, the <code>visibilityState</code> property and the <code>onvisibilitychange</code> event handler are only useful when a web <em>page</em> is hidden. Like most native apps, a MiniApp can only have one instance, but a web app can appear in multiple browser tabs at the same time, so there is no correspondence for <code>app.onHide</code> in web apps.
    </p>
   
     </section>

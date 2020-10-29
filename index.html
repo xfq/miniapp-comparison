@@ -21,9 +21,6 @@ var respecConfig = {
     }
   ],
 
-  wg: "MiniApps Ecosystem Community Group",
-  wgURI: "https://www.w3.org/community/miniapps/",
-
   github: "xfq/miniapp-comparison"
 };
 </script>
@@ -107,7 +104,7 @@ var respecConfig = {
     </p>
 
     <p>
-      When styling a MiniApp page, CSS is usually used, sometimes with <a href="https://developers.weixin.qq.com/miniprogram/en/dev/framework/view/wxss.html">extensions</a> like new units.
+      When styling a MiniApp page, CSS is usually used, sometimes with <a href="https://developers.weixin.qq.com/miniprogram/en/dev/framework/view/wxss.html">extensions</a> such as responsive pixels (aka density-independent pixels).
     </p>
 
     <p>
@@ -925,7 +922,7 @@ or `miniProgram`, which means another Mini Program. -->
     </p>
 
     <p>
-      Since most MiniApp implementations disallow dynamic code loading like <code>eval</code>, XSS is very difficult (or impossible).
+      Since most MiniApp implementations disallow dynamic code loading like <code>eval</code> and <code>new Function</code>, XSS is very difficult.
     </p>
 
     <p>
